@@ -12,7 +12,7 @@ class App extends React.Component {
 
   componentDidMount() {
     console.log("componentDidMount success")
-    axios.get('/api/data')
+    axios.get('https://mern-funtions.azurewebsites.net/api/HttpTrigger1')
       .then(res => {
         console.log("data recieved: ", res.data);
         this.setState({ bestShows: res.data[0] });
