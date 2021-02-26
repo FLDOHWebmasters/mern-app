@@ -1,6 +1,6 @@
 const mongodb = require('mongodb');
 
-const uri = "mongodb+srv://webmasters:6E8uMBf3iD89qBx@fdoh.9yjzv.azure.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const uri = process.env.MongoURI;
 
 // May be retained between function executions depending on whether Azure
 // cleans up memory
