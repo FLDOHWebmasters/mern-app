@@ -74,10 +74,10 @@ export default class NavBar extends React.Component {
     }
 
     render() {
-        let calendarLink = null;
+        let aboutLink = null;
         if (this.props.isAuthenticated) {
-            calendarLink = (<NavItem>
-                <RouterNavLink to="/calendar" className="nav-link" exact>Calendar</RouterNavLink>
+            aboutLink = (<NavItem>
+                <RouterNavLink to="/About" className="nav-link" exact>About</RouterNavLink>
             </NavItem>
             );
         }
@@ -93,7 +93,7 @@ export default class NavBar extends React.Component {
                                 <NavItem>
                                     <RouterNavLink to="/" className="nav-link" exact>Home</RouterNavLink>
                                 </NavItem>
-                                {calendarLink}
+                                {aboutLink}
                             </Nav>
                             <Nav className="justify-content-end" navbar>
                                 <NavItem>
