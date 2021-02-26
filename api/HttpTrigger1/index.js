@@ -1,6 +1,6 @@
 const mongodb = require('mongodb');
 
-const uri = process.env.MongoURI;
+const uri = process.env["MongoDbAtlasConnectionStr"];
 
 // May be retained between function executions depending on whether Azure
 // cleans up memory
