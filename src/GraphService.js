@@ -25,3 +25,46 @@ export async function getUserDetails(accessToken) {
 
   return user;
 }
+
+/*
+export async function getUserWeekCalendar(accessToken, timeZone, startDate) {
+  const client = getAuthenticatedClient(accessToken);
+
+  // GET /me/calendarview?startDateTime=''&endDateTime=''
+  // &$select=subject,organizer,start,end
+  // &$orderby=start/dateTime
+  // &$top=50
+  var response = await client
+    .api('/me/calendarview')
+    .header('Prefer', `outlook.timezone="${timeZone}"`)
+    .query({ startDateTime: startDateTime, endDateTime: endDateTime })
+    .select('subject,organizer,start,end')
+    .orderby('start/dateTime')
+    .top(25)
+    .get();
+
+  if (response["@odata.nextLink"]) {
+    // Presence of the nextLink property indicates more results are available
+    // Use a page iterator to get all results
+    var events = [];
+
+    // Must include the time zone header in page
+    // requests too
+    var options = {
+      headers: { 'Prefer': `outlook.timezone="${timeZone}"` }
+    };
+
+    var pageIterator = new PageIterator(client, response, (event) => {
+      events.push(event);
+      return true;
+    }, options);
+
+    await pageIterator.iterate();
+
+    return events;
+  } else {
+
+    return response.value;
+  }
+}
+*/

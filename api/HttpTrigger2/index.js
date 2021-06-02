@@ -1,13 +1,59 @@
+const mongodb = require('mongodb');
+
+const uri = process.env["MongoDbAtlasConnectionStr"];
+
+// May be retained between function executions depending on whether Azure
+// cleans up memory
+let client = null;
+
+
 module.exports = async function (context, req) {
-    context.log('JavaScript HTTP trigger function processed a request.');
+    context.log('Running');
 
-    const name = (req.query.name || (req.body && req.body.name));
-    const responseMessage = name
-        ? "Hello, " + name + ". This HTTP triggered function executed successfully."
-        : "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.";
+    
+    return client !== null ? query() :  run();
 
-    context.res = {
-        // status: 200, /* Defaults to 200 */
-        body: responseMessage
+  
+  async function run() {
+    try {
+        client = new mongodb.MongoClient(uri, 
+            {
+                useNewUrlParser: true,
+                useUnifiedTopology: true
+        });
+        await client.connect();
+        await query();
+    } catch (err) {
+        context.log.error('ERROR', err);
+        // This rethrown exception will be handled by the Functions Runtime and will only fail the individual invocation
+        throw err;
+    } finally {
+      // Ensures that the client will close when you finish/error
+      await client.close();
+      context.log("client closed.");
+      client = null;
+    }
+  }
+
+  async function query() {
+      try {
+
+        let docs = await client.db('tracker').collection('users').find().toArray()
+        .catch(err => console.error(`Failed to find documents: ${err}`));
+        
+        console.log(docs);
+        return (context.res = {
+            status: 200,
+            body: docs,
+          });
+      } catch (err) {
+         context.log.error('ERROR', err);
+        // This rethrown exception will be handled by the Functions Runtime and will only fail the individual invocation
+        throw err;
+      }
+    
+          
     };
-}
+
+};
+

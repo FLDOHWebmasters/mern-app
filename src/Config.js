@@ -1,6 +1,6 @@
 export const config = {
     appId: '8b394bd2-4206-460f-886c-cb1e5d50bc00',
-    redirectUri: 'https://black-stone-02eb0230f.azurestaticapps.net/.auth/login/aad/callback',
+    redirectUri: 'http://localhost:3000',
     scopes: [
       'user.read',
       'mailboxsettings.read',

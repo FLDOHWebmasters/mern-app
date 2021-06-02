@@ -1,6 +1,6 @@
 const mongodb = require('mongodb');
 const uri = process.env["MongoDbAtlasConnectionStr"];
-
+var ObjectId = require('mongodb').ObjectID;
 const jwt = require('jsonwebtoken');
 
 // May be retained between function executions depending on whether Azure
@@ -34,17 +34,20 @@ module.exports = async function (context, req) {
 
   async function query() {
       try {
-        var token = req.body.access;
-        var decodedToken = jwt.decode(token);
-        context.log(decodedToken.toString());
-        decodedToken = decodedToken.upn
-        context.log(decodedToken.toString());
-        context.log(req.body);
-        req.body['access'] = decodedToken.toString();
-        context.log(req.body);
-        let docs = await client.db('tracker').collection('people').insertOne(req.body)
-        .catch(err => console.error(`Failed to find documents: ${err}`));
-        
+            console.log(req.body);
+            var token = req.body.access;
+            var decodedToken = jwt.decode(token);
+            
+            console.log(decodedToken.upn);
+
+            req.body['access'] = decodedToken.upn;
+
+            console.log({"_id": req.body['_id'], "access": req.body['access']});
+            let docs = await client.db('tracker').collection('posts').deleteOne(
+                {"_id": new ObjectId(req.body['_id']), "access": req.body['access']}
+            )
+            .catch(err => console.error(`Failed to find documents: ${err}`));
+        console.log("docs: " + docs);
         return (context.res = {
             status: 200,
             body: docs,

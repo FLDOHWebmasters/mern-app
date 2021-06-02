@@ -1,8 +1,12 @@
 import React from 'react';
 import {
-    Button,
-    Jumbotron
+    Button
 } from 'reactstrap';
+import {
+    Link
+} from 'react-router-dom';
+import './App.css';
+import 'bootstrap/dist/css/bootstrap.css';
 
 function WelcomeContent(props) {
     if (props.isAuthenticated) {
@@ -14,22 +18,37 @@ function WelcomeContent(props) {
         );
     }
 
-    return (<Button color="primary" onClick={props.authButtonMethod}>Click here to sign in</Button>);
+    return (<Button className="signInBtn" onClick={props.authButtonMethod}>Click here to sign in</Button>);
 }
 
 export default class Welcome extends React.Component {
     render() {
         return (
-        <Jumbotron>
-            <h1>FDOH Ancestry Site</h1>
-            <p className="lead">
-                This site is available to all Floridians.
-            </p>
-            <WelcomeContent
-                isAuthenticated={this.props.isAuthenticated}
-                user={this.props.user}
-                authButtonMethod={this.props.authButtonMethod} />
-        </Jumbotron>
+            <div className="container-fluid px-0">
+                <div className="welcome row no-gutters align-items-start p-0">
+                    <div className="col welcome-msg">
+                        <h3>Connecting Floridians Across Generations</h3>
+                        <p className="lead">
+                            This site is open to the public.
+                        </p>
+                        <WelcomeContent
+                            isAuthenticated={this.props.isAuthenticated}
+                            user={this.props.user}
+                            authButtonMethod={this.props.authButtonMethod} />
+                    </div>
+                </div>
+                <div className="row no-gutters text-center welcome-middle">
+                    <div className="col">
+                        <h3>Discover your past.</h3>
+                    </div>
+                </div>
+                <div className="row no-gutters text-center welcome-bottom">
+                    <div className="col">
+                        <h3>Get your personalized report today.</h3>
+                        <Link className="custom-btn btn" to={'/search'}>Get started!</Link>
+                    </div>
+                </div>
+            </div>
         );
         
     }

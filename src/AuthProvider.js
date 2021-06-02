@@ -48,7 +48,6 @@ export default function withAuthProvider(WrappedComponent) {
         login={ () => this.login() }
         logout={ () => this.logout() }
         getAccessToken={ (scopes) => this.getAccessToken(scopes) }
-        setError={ (message, debug) => this.setErrorMessage(message, debug) }
         { ...this.props } />;
     }
 

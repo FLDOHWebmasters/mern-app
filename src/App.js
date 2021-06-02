@@ -1,15 +1,22 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Container } from 'reactstrap';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import NavBar from './NavBar';
 import ErrorMessage from './ErrorMessage';
 import Welcome from './Welcome';
 import withAuthProvider from './AuthProvider';
+import AddFamily from './AddFamily';
+import Posts from './Post';
+import AddPost from './AddPost';
 import 'bootstrap/dist/css/bootstrap.css';
-
 import "./index.css";
+import Search from './Search';
+import Family from './Family';
 
   class App extends Component {
+
+    handleRenderProps=(routerProps) => {
+      return(<Posts {...routerProps}/>)
+    }
     render() {
       let error = null;
       if (this.props.error) {
@@ -17,15 +24,16 @@ import "./index.css";
           message={this.props.error.message}
           debug={this.props.error.debug} />;
       }
-  
+      
       return (
-        <Router>
+        <Switch>
           <div>
             <NavBar
               isAuthenticated={this.props.isAuthenticated}
               authButtonMethod={this.props.isAuthenticated ? this.props.logout : this.props.login}
               user={this.props.user} />
-            <Container>
+
+            
               {error}
               <Route exact path="/"
                 render={(props) =>
@@ -34,9 +42,41 @@ import "./index.css";
                     user={this.props.user}
                     authButtonMethod={this.props.login} />
                 } />
-            </Container>
+                <Route path="/family" className="nav-link" exact render={(props) => <Family getAccessToken={this.props.getAccessToken} {...props} />}/>
+                <Route 
+                  path="/addfamily" 
+                  className="nav-link" 
+                  render={(props) => 
+                    <AddFamily 
+                      getAccessToken={this.props.getAccessToken} 
+                      isAuthenticated={this.props.isAuthenticated} {...props}/>}/>
+                <Route 
+                  path='/posts' 
+                  render={(props) => 
+                          <Posts 
+                            user={this.props.user}
+                            {...props}/>
+                          }
+                        
+                />
+                <Route 
+                  path='/addpost' 
+                  render={(props) => 
+                    <AddPost 
+                      getAccessToken={this.props.getAccessToken} 
+                      isAuthenticated={this.props.isAuthenticated} 
+                      user={this.props.user}
+                      {...props}/>}/>
+                <Route exact path="/search" render={(props) => 
+                  <Search 
+                    getAccessToken={this.props.getAccessToken} 
+                    isAuthenticated={this.props.isAuthenticated}
+                    {...props} 
+                />}/>
+            
           </div>
-        </Router>
+        
+        </Switch>
       );
     }
   }

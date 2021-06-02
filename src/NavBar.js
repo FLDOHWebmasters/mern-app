@@ -3,7 +3,7 @@ import {NavLink as RouterNavLink} from 'react-router-dom';
 import {
     Button,
     Collapse,
-    Container,
+    Col,
     Navbar,
     NavbarToggler,
     NavbarBrand,
@@ -14,8 +14,12 @@ import {
     DropdownToggle,
     DropdownMenu,
     DropdownItem,
+    Form,
+    FormGroup,
+    Input
 } from 'reactstrap';
 
+import './App.css';
 
 function UserAvatar(props) {
     if (props.user.avatar) {
@@ -57,6 +61,19 @@ function AuthNavItem(props) {
     );
 }
 
+function PageLink(props) {
+    if (props.isAuthenticated) {
+        return (
+            <NavItem>
+                <RouterNavLink to={`/${props.link}`} className="nav-link"> {props.name} </RouterNavLink>
+            </NavItem>
+        )
+    }
+    return (
+        null
+    )
+}
+
 export default class NavBar extends React.Component {
     constructor(props) {
         super(props);
@@ -74,27 +91,59 @@ export default class NavBar extends React.Component {
     }
 
     render() {
-        let aboutLink = null;
+        let searchBar = null;
         if (this.props.isAuthenticated) {
-            aboutLink = (<NavItem>
-                <RouterNavLink to="/About" className="nav-link" exact>About</RouterNavLink>
-            </NavItem>
-            );
+            searchBar = (<Form inline>
+                            <FormGroup>
+                            <Col md={12}>
+                            <Input type="text" name="search" id="searchBar" placeholder="Search" />
+                            </Col>
+                            </FormGroup>
+                            
+                        </Form>)
         }
 
         return (
             <div>
-                <Navbar color="dark" dark expand="md" fixed="top">
-                    <Container>
-                        <NavbarBrand href="/">My website</NavbarBrand>
+                <Navbar className="nav-bar" expand="md" fixed="top">
+                    
+                        <NavbarBrand className="nav-link" href="/">Florida Genealogy</NavbarBrand>
                         <NavbarToggler onClick={this.toggle} />
                         <Collapse isOpen={this.state.isOpen} navbar>
                             <Nav className="mr-auto" navbar>
                                 <NavItem>
                                     <RouterNavLink to="/" className="nav-link" exact>Home</RouterNavLink>
                                 </NavItem>
-                                {aboutLink}
+                                {(this.props.isAuthenticated && (<UncontrolledDropdown>
+                                    <DropdownToggle nav caret>
+                                        Family
+                                    </DropdownToggle>                      
+                                    <DropdownMenu right>
+                                        <DropdownItem>
+                                            <RouterNavLink to={`/family`} className="nav-link"> Family </RouterNavLink>
+                                        </DropdownItem>
+                                        <DropdownItem divider />
+                                        <DropdownItem>
+                                            <RouterNavLink to={`/addfamily`} className="nav-link"> Add </RouterNavLink>
+                                        </DropdownItem>    
+                                    </DropdownMenu>
+                                </UncontrolledDropdown>))}
+                                {(this.props.isAuthenticated && (<UncontrolledDropdown>
+                                    <DropdownToggle nav caret>
+                                        Post
+                                    </DropdownToggle>                      
+                                    <DropdownMenu right>
+                                        <DropdownItem>
+                                            <RouterNavLink to={`/posts`} className="nav-link"> Post </RouterNavLink>
+                                        </DropdownItem>
+                                        <DropdownItem divider/>
+                                        <DropdownItem>
+                                            <RouterNavLink to={`/addpost`} className="nav-link"> Add Post </RouterNavLink>
+                                        </DropdownItem>    
+                                    </DropdownMenu>
+                                </UncontrolledDropdown>))}
                             </Nav>
+                            {searchBar}
                             <Nav className="justify-content-end" navbar>
                                 <NavItem>
                                     <NavLink href="https://developer.microsoft.com/graph/docs/concepts/overview" target="_blank">
@@ -108,7 +157,7 @@ export default class NavBar extends React.Component {
                                     user={this.props.user} />
                             </Nav>
                         </Collapse>
-                    </Container>
+                    
                 </Navbar>
             </div>
         );
