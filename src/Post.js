@@ -134,7 +134,7 @@ class Posts extends React.Component{
             headers: {'Content-Type': 'application/json', "access": this.state.access},
         };
         fetch(
-            '/api/FindYourPosts',
+            'https://mern-funtions.azurewebsites.net/api/FindYourPosts',
             requestOptions
         )
         .then(response => response.json())
@@ -145,7 +145,7 @@ class Posts extends React.Component{
         })
 
         fetch(
-            '/api/NotYourPosts',
+            'https://mern-funtions.azurewebsites.net/api/NotYourPosts',
             requestOptions
         )
         .then(response => response.json())
