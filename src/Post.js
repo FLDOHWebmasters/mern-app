@@ -45,7 +45,7 @@ function PostPage (props) {
             headers: {'Content-Type': 'application/json', "access": props.access},
         };
         const fetchData = () => {
-        fetch(`http://localhost:7071/api/HttpTrigger5/${postId}`, requestOptions, {})
+        fetch(`/api/HttpTrigger5/${postId}`, requestOptions, {})
         .then((res) => {
             console.log(JSON.stringify(res));
             return res.json();
@@ -78,7 +78,7 @@ function PostPage (props) {
             body: JSON.stringify({'data': formData, "_id": postId, 'access': accessToken})
         }
 
-        fetch('http://localhost:7071/api/UpdatePost', requestOptions)
+        fetch('/api/UpdatePost', requestOptions)
         .then(response => response.json())
         .then(result => window.location.href='/posts');
     }
@@ -134,7 +134,7 @@ class Posts extends React.Component{
             headers: {'Content-Type': 'application/json', "access": this.state.access},
         };
         fetch(
-            'http://localhost:7071/api/FindYourPosts',
+            '/api/FindYourPosts',
             requestOptions
         )
         .then(response => response.json())
@@ -145,7 +145,7 @@ class Posts extends React.Component{
         })
 
         fetch(
-            'http://localhost:7071/api/NotYourPosts',
+            '/api/NotYourPosts',
             requestOptions
         )
         .then(response => response.json())
@@ -173,11 +173,11 @@ class Posts extends React.Component{
             body: JSON.stringify({"_id": _id, 'access': this.state.access})
         }
 
-        await fetch('http://localhost:7071/api/DeletePost', requestOptions)
+        await fetch('/api/DeletePost', requestOptions)
         .then(response => response.json())
         .then(result => console.log(result))
         fetch(
-            'http://localhost:7071/api/FindYourPosts',
+            '/api/FindYourPosts',
             {
                 method: 'GET',
                 headers: {'Content-Type': 'application/json', "access": this.state.access},
