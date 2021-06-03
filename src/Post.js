@@ -80,8 +80,8 @@ function PostPage (props) {
 
         await fetch('/api/UpdatePost', requestOptions)
         .then(response => response.json());
-
-        this.props.history.push('/posts');
+        this.context.history.push('/posts')
+        
     }
   
     return (    
