@@ -42,7 +42,7 @@ function FamilyMember(props) {
         };
         console.log(formData)
        
-        fetch(`http://localhost:7071/api/UpdateFamilyMember`, requestOptions)
+        fetch(`/api/UpdateFamilyMember`, requestOptions)
         .then(response => response.json())
         .then(result => {
             setEditMode(false);
@@ -64,7 +64,7 @@ function FamilyMember(props) {
         };
         console.log(formData)
        
-        fetch(`http://localhost:7071/api/DeleteFamilyMember`, requestOptions)
+        fetch(`/api/DeleteFamilyMember`, requestOptions)
         .then(response => response.json())
         .then(result => {
             setEditMode(false);
@@ -172,7 +172,7 @@ function EditFamily (props) {
             headers: {'Content-Type': 'application/json', "access": props.access},
         };
         const fetchData = () => {
-        fetch(`http://localhost:7071/api/FindFamilyMember/${personId}`, requestOptions, {})
+        fetch(`/api/FindFamilyMember/${personId}`, requestOptions, {})
         .then((res) => {
             console.log(res.body);
             return res.json();
@@ -271,7 +271,7 @@ class AddFamily extends React.Component{
             body: JSON.stringify(filledInData)
         };
         this.setState({isLoading: true});
-        fetch('http://localhost:7071/api/HttpTrigger1', requestOptions)
+        fetch('/api/HttpTrigger1', requestOptions)
             .then(response => response.json())
             .then(data => {
                 console.log(filledInData);
@@ -301,7 +301,7 @@ class AddFamily extends React.Component{
                 headers: {'Content-Type': 'application/json', 'access': this.state.access},
             };
 
-            fetch(`http://localhost:7071/api/HttpTrigger6`, requestOptions, {})
+            fetch(`/api/HttpTrigger6`, requestOptions, {})
             .then((res) => {
                 return res.json();
             })

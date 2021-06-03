@@ -18,7 +18,7 @@ export default function Family(props) {
             headers: {'Content-Type': 'application/json', 'access': accessToken},
         };
         const data = await fetch(
-            'http://localhost:7071/api/HttpTrigger6', requestOptions, {}
+            '/api/HttpTrigger6', requestOptions, {}
         );
 
         const items = await data.json();

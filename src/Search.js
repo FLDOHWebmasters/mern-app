@@ -28,7 +28,7 @@ export default function Search(props) {
         };
         console.log(formData)
        
-        fetch(`http://localhost:7071/api/HttpTrigger7`, requestOptions)
+        fetch(`/api/HttpTrigger7`, requestOptions)
         .then(response => response.json())
         .then(result => {
             setData(result);
