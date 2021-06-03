@@ -78,9 +78,10 @@ function PostPage (props) {
             body: JSON.stringify({'data': formData, "_id": postId, 'access': accessToken})
         }
 
-        fetch('/api/UpdatePost', requestOptions)
-        .then(response => response.json())
-        .then(result => window.location.href='/posts');
+        await fetch('/api/UpdatePost', requestOptions)
+        .then(response => response.json());
+
+        this.props.history.push('/posts');
     }
   
     return (    
