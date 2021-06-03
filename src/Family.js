@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
 import { config } from './Config';
+import { Container } from 'react-bootstrap';
 
 export default function Family(props) {
     //When the component renders, run fetchItems();
@@ -29,7 +30,7 @@ export default function Family(props) {
         <div className="container-fluid">
         <div className="family-tree">
             {items.map(props=> (
-                <div key={props._id} className="entry col-md-3">    
+                <div key={props._id} className="entry">    
                     <div className="name">
                         <p>{props.firstName + " " + props.lastName}</p>
                     </div>  
