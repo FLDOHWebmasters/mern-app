@@ -1,59 +1,17 @@
-import { Card, FormControl, FormLabel, Button } from 'react-bootstrap';
+import { FormControl, FormLabel, Button } from 'react-bootstrap';
 import { config } from './Config';
 import withAuthProvider from './AuthProvider';
-import Grandma from './grandmother.svg';
+
 import {
     BrowserRouter as Router,
     Switch,
     Route,
     Link,
-    useParams,
-    useRouteMatch
+    useParams
   } from "react-router-dom";
 import './App.css';
 import React, { useState, useEffect } from 'react';
 
-function YourPosts(props) {
-    console.log(props)
-
-    const handleDelete = async(e) => {
-        e.preventDefault();
-        var accessToken = await props.getAccessToken(config.scopes);
-
-        const requestOptions = {
-            method: 'Post',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({"_id": props._id, 'access': accessToken})
-        }
-
-        fetch('http://localhost:7071/api/DeletePost', requestOptions)
-        .then(response => response.json())
-        .then(result => console.log(result));
-        return null;
-    }
-    return (
-        <div>
-            <div key={props._id} className="post-card">
-                 
-                <div className="row">
-                    <div className="col">
-                        <h5>{props.title}</h5>
-                    </div>
-                    <div className="col-md-3">
-                        <Link className="col btn btn-success" to={`/posts/${props._id}`}>Edit</Link>
-                        <Button 
-                            className="post-update"
-                            onClick={e => handleDelete(e)}>Delete</Button>        
-                    </div>
-                </div>
-                <p>{props.description}</p> 
-                <div className="post-username">
-                    <p>By {props.username}</p>
-                </div>  
-            </div>    
-        </div>
-    );
-}
 
 function NotYourPosts(props) {
     console.log(props)

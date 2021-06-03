@@ -5,12 +5,10 @@ import { Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import {FormControl, FormLabel, Row} from 'react-bootstrap';
 import withAuthProvider from './AuthProvider';
 import {
-    BrowserRouter as Router,
-    Switch,
+    BrowserRouter as 
     Route,
     Link,
     useParams,
-    useRouteMatch
   } from "react-router-dom";
 import './App.css';
 
@@ -209,14 +207,14 @@ function EditFamily (props) {
                             <FormControl 
                                 type="text" 
                                 value={(data.dob ? data.dob : "")}
-                                onChange={e => setFirstName(e.target.value)}/>
+                                onChange={e => setDob(e.target.value)}/>
                         </Col>
                 </FormGroup>
                     <FormLabel column>Birth Place:</FormLabel>
                     <FormControl 
                     type="text" 
                     value={(data.birthPlace ? data.birthPlace : "")}
-                    onChange={e => setFirstName(e.target.value)}/>
+                    onChange={e => setBirthPlace(e.target.value)}/>
                     <p>{(data.relationship ? data.relationship : "")}</p>
                 </div>
                     <h6 title="dob"><i className="fas fa-users"></i> <span className="dob">{(data.dob && (data.dob))}</span></h6>

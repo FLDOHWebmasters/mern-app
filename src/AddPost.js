@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { config } from './Config';
-import { Form, FormGroup, FormControl, Row, FormLabel, Col, Button } from 'react-bootstrap';
+import { Form, FormGroup, FormControl, Row, FormLabel, Button } from 'react-bootstrap';
 import './App.css';
 
 export default function AddPost (props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [access, setAccess] = useState("");
 
   const handleSubmit = async(e) => {
     e.preventDefault();

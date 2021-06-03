@@ -61,18 +61,6 @@ function AuthNavItem(props) {
     );
 }
 
-function PageLink(props) {
-    if (props.isAuthenticated) {
-        return (
-            <NavItem>
-                <RouterNavLink to={`/${props.link}`} className="nav-link"> {props.name} </RouterNavLink>
-            </NavItem>
-        )
-    }
-    return (
-        null
-    )
-}
 
 export default class NavBar extends React.Component {
     constructor(props) {

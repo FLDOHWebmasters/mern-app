@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
 import { config } from './Config';
-import { Container } from 'react-bootstrap';
 
 export default function Family(props) {
     //When the component renders, run fetchItems();
@@ -31,15 +30,15 @@ export default function Family(props) {
         <div className="family-tree">
             {items.map(props=> (
                 <div key={props._id} className="entry col-md-3">    
-                <div className="name">
-                    <p>{props.firstName + " " + props.lastName}</p>
-                </div>  
-                <div className="info">
-                    <p>DOB: {(props.dob ? props.dob : "Unknown")}</p>
-                    <p>Bith Place: {props.birthPlace ? props.birthPlace : "Unknown"}</p>
-                    <p>Relationship: {(props.relationship ? props.relationship : "Unknown")}</p>
-                </div>                                   
-            </div>
+                    <div className="name">
+                        <p>{props.firstName + " " + props.lastName}</p>
+                    </div>  
+                    <div className="info">
+                        <p>DOB: {(props.dob ? props.dob : "Unknown")}</p>
+                        <p>Bith Place: {props.birthPlace ? props.birthPlace : "Unknown"}</p>
+                        <p>Relationship: {(props.relationship ? props.relationship : "Unknown")}</p>
+                    </div>                                   
+                </div>
                                
             ))}
         </div>
