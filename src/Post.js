@@ -80,7 +80,7 @@ function PostPage (props) {
     const [data, setData] = useState("");
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("");
-    
+
     useEffect(() => {   
         const requestOptions = {
             method: 'GET',
