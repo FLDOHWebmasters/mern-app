@@ -1,5 +1,5 @@
 export const config = {
-    appId: '043d63e5-3410-4eab-bdd4-b8dcc104438c',
+    appId: '8b394bd2-4206-460f-886c-cb1e5d50bc00',
     redirectUri: '/',
     scopes: [
       'user.read',
