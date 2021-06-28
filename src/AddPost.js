@@ -34,7 +34,7 @@ export default function AddPost (props) {
         })  
         
   }
-  
+  //poop
   if (props.isAuthenticated) {
     return (
       <div className="container-fluid search">
