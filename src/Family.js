@@ -8,17 +8,21 @@ import woman from './woman.png';
 import man from './man.png';
 
 export default function Family(props) {
+    const [items, setItems] = useState([]);
+    const [showPopup, setPopup] = useState(false);
+    const [showEdit, setEdit] = useState(false);
+    const [access, setAccess] = useState("");
+
     //When the component renders, run fetchItems();
     useEffect(() => {
         fetchItems();
     }, []);
     
     
-    const [items, setItems] = useState([]);
-    const [showPopup, setPopup] = useState(false);
-    const [showEdit, setEdit] = useState(false);
+   
     const fetchItems = async () => {
         var accessToken = await props.getAccessToken(config.scopes);
+        setAccess(accessToken);
         const requestOptions = {
             method: 'GET',
             headers: {'Content-Type': 'application/json', 'access': accessToken},
@@ -40,6 +44,57 @@ export default function Family(props) {
         const [dob, setDob] = useState((props.dob ? props.dob : ""));
         const [birthPlace, setBirthPlace] = useState(`${props.city ? props.city : ""}, ${props.state ? props.state : ""}`);
 
+        useEffect(() => {
+            fetchItems();
+        }, []);
+
+        const fetchItems = async () => {
+            if (showPopup === 'me') {
+                try {
+                    const requestOptions = {
+                        method: 'GET',
+                        headers: {'Content-Type': 'application/json', 'access': access},
+                    };
+        
+                    fetch(`/api/GetProfileInfo`, requestOptions, {})
+                    .then((res) => {
+                        return res.json();
+                    })
+                    .then((data) => {
+                        console.log(data);  
+                        setFirstName(data["firstName"]);
+                        setLastName(data["lastName"]);  
+                        setDob(data["dob"]);   
+                    })
+                    .catch((error) => console.log(error));
+                                 
+                  }
+                  catch (err) {
+                    console.log(err)            
+                  }
+                
+            }
+            else {
+                const requestOptions = {
+                    method: 'GET',
+                    headers: {'Content-Type': 'application/json', "access": access, "role": showPopup},
+                };
+                const fetchData = () => {
+                fetch(`/api/GetFamilyMember`, requestOptions, {})
+                .then((res) => {
+                    console.log(res.body);
+                    return res.json();
+                })
+                .then((response) => {
+                    
+                    setData(response);
+                    setIsLoading(false);
+                })
+                .catch((error) => console.log(error));
+              }
+                return null
+            }
+        }
 
         const handleSubmit = e => {
             e.preventDefault();
@@ -47,28 +102,27 @@ export default function Family(props) {
                 "firstName":firstName,
                 "lastName": lastName,
                 "dob": dob,
-                "birthPlace": birthPlace
+                "birthPlace": birthPlace,
+                "access": access
             };
-            
-            
-            
-            const requestOptions = {
-                method: 'GET',
-                headers: {
-                            'Content-Type': 'application/json', 
-                            'data': JSON.stringify(formData), 
-                            'access': props.access,
-                            'id': props._id
-                        }
-            };
+        
             console.log(formData)
-           
-            fetch(`/api/UpdateFamilyMember`, requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                setEditMode(false);
-                console.log(result)
-            })       
+
+            if (showPopup === "me") {
+                const requestOptions = {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                };
+                fetch('/api/UpdateProfileInfo', requestOptions)
+                .then(() => {  
+                    
+                },
+                (error) => {
+                    console.log(error)
+                })
+            }
+                  
         }
     
         const handleDelete = e => {
@@ -127,7 +181,7 @@ export default function Family(props) {
                 <div className="edit-options">
                     <Button className="btn btn-primary" onClick={e => handleSubmit(e)}>Update</Button>
                     <Button className="btn btn-primary" onClick={e => handleDelete(e)}>Delete</Button>
-                    <Button className="btn btn-primary" onClick={e => setEditMode(false)}>Cancel</Button>  
+                    <Button className="btn btn-primary" onClick={e => {setEditMode(false); setEdit(false)}}>Cancel</Button>  
                 </div>
             </div>                                       
             </div>
@@ -187,14 +241,14 @@ export default function Family(props) {
                     </div>
                 </div>
                 <div className="maternal">
-                    <div className="mom node">
+                    <div className="mom node" onClick={() => showPopup ? setPopup(false) : setPopup("mom")}>
                         <img src={woman} />
                         <p>Mother</p> 
                     </div>
                 </div>
             </div>
             <div className="me">
-                <div className="node" id="me" onClick={() => showPopup ? setPopup(false) : setPopup(true)}>
+                <div className="node" id="me" onClick={() => showPopup ? setPopup(false) : setPopup("me")}>
                     <img src={woman} />
                     <p>Me</p>
                 </div>

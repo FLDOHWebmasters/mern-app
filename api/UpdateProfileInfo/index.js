@@ -36,30 +36,30 @@ module.exports = async function (context, req) {
       try {
         var token = req.body.access;
         var decodedToken = jwt.decode(token);
-        context.log(decodedToken.toString());
+        
         decodedToken = decodedToken.upn;
         req.body['access'] = decodedToken.toString();
-        context.log(decodedToken.toString())
+        
+        let regex = "^" + req.body['access'] + '$';
+        var filter = {'access': {$regex: new RegExp(regex), $options: 'i'}};
+
         let findExistingUser = await client.db('tracker').collection('users').find({'access': req.body['access']})
         .toArray()
         .catch(err => console.error(`Insert failed: ${err}`));
-        context.log(findExistingUser)
-        if (findExistingUser.length === 0) {
-            let docs = await client.db('tracker').collection('users').insertOne(req.body)
+        context.log(findExistingUser.length === 0)
+      
+        
+          console.log('else')
+            let docs = await client.db('tracker').collection('users').updateOne(filter, 
+            {$set: req.body},
+            {upsert: true})
+            .then(response => console.log(response))
             .catch(err => console.error(`Insert failed: ${err}`));
             return (context.res = {
                 status: 200,
                 body: docs,
               });
-        }
-        else {
-            let docs = await client.db('tracker').collection('users').updateOne({'email': req.body['access']}, {$set: req.body})
-            .catch(err => console.error(`Insert failed: ${err}`));
-            return (context.res = {
-                status: 200,
-                body: docs,
-              });
-        }
+        
 
       } catch (err) {
          context.log.error('ERROR', err);

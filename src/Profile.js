@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from "react-router-dom";
 import Grandma from './grandmother.svg';
 import { config } from './Config';
 import { Col, Button, Form, FormGroup, Label, Input } from 'reactstrap';
@@ -11,6 +12,7 @@ import {
     useParams,
   } from "react-router-dom";
 import './Profile.css';
+
 
 class Profile extends React.Component{
     constructor(props) {
@@ -35,7 +37,7 @@ class Profile extends React.Component{
 
         var filledInData = {};
         Object.keys(this.state).map((key) => {
-            if (this.state[key] !== "" && (key !== "familyMembers") && (key!== "isLoading")) {
+            if (this.state[key] !== "" && (key!== "isLoading")) {
                 filledInData[key] = this.state[key];
             }
         });
@@ -51,12 +53,13 @@ class Profile extends React.Component{
             .then(response => response.json())
             .then(data => {
                 console.log("data" + data);
-                this.setState({isLoading: false});
+                this.setState({isLoading: false});    
+                alert('saved');
+                
             },
             (error) => {
                 console.log(error)
             })
-            
     }
 
     async componentDidMount() {
@@ -79,11 +82,16 @@ class Profile extends React.Component{
                 return res.json();
             })
             .then((data) => {
-                console.log(data);
-                Object.keys(data).map((key) => {
-                    this.state[key] = data[key];
+                console.log(data);            
+                this.setState({
+                    firstName: data["firstName"]
                 })
-                
+                this.setState({
+                    lastName: data["lastName"]
+                })
+                this.setState({
+                    dob: data["dob"]
+                })
             })
             .catch((error) => console.log(error));
                          
@@ -94,6 +102,7 @@ class Profile extends React.Component{
         }
       }
 
+      
     render() {
         let match=this.props.match;
 
@@ -105,7 +114,7 @@ class Profile extends React.Component{
                     <Form>
                     <div className="form-group">
                         <label>First Name: </label>
-                        <input type="text" name="firstName"
+                        <FormControl type="text" name="firstName"
                             value={this.state.firstName || ""} 
                             onChange={this.handleChange}  
                             className="animated fadein"
@@ -113,7 +122,7 @@ class Profile extends React.Component{
                     </div>
                     <div className="form-group">
                         <label>Last Name: </label>
-                        <input type="text" name="lastName"
+                        <FormControl type="text" name="lastName"
                                     value={this.state.lastName || ""} 
                                     onChange={this.handleChange}  
                                     className="animated fadein"
@@ -121,13 +130,14 @@ class Profile extends React.Component{
                     </div>
                     <div className="form-group">
                         <label>Date of Birth: </label>
-                        <input type="text" name="dob"
+                        <FormControl type="text" name="dob"
                                     value={this.state.dob || ""} 
                                     onChange={this.handleChange}  
                                     className="animated fadein"
                         />  
                      </div>
                      <button className="btn" onClick={this.handleSubmit}>Save</button>
+                     
                    </Form> 
                 </div>
                 
