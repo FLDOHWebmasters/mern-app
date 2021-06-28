@@ -87,8 +87,7 @@ export default function Family(props) {
                 })
                 .then((response) => {
                     
-                    setData(response);
-                    setIsLoading(false);
+                    
                 })
                 .catch((error) => console.log(error));
               }
