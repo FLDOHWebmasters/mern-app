@@ -26,7 +26,7 @@ export default function AddPost (props) {
       body: JSON.stringify({'data': formData, 'access': accessToken})
     };
 
-    await fetch(`http://localhost:7071/api/AddPost`, requestOptions)
+    await fetch(`/api/AddPost`, requestOptions)
         .then(response => response.json())
         .then(result => {
             console.log(result)
