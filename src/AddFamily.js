@@ -15,11 +15,12 @@ import './App.css';
 
 function FamilyMember(props) {
     const [editMode, setEditMode] = useState(false);
+    const [deleteItem, setDelete] = useState(false);
     const [firstName, setFirstName] = useState((props.firstName ? props.firstName : ""));
     const [lastName, setLastName] = useState((props.lastName ? props.lastName : ""));
     const [dob, setDob] = useState((props.dob ? props.dob : ""));
-    const [birthPlace, setBirthPlace] = useState((props.birthPlace ? props.birthPlace : ""));
-
+    const [birthPlace, setBirthPlace] = useState(`${props.city ? props.city : ""}, ${props.state ? props.state : ""}`);
+    
     const handleSubmit = e => {
         e.preventDefault();
         const formData = {
@@ -28,8 +29,8 @@ function FamilyMember(props) {
             "dob": dob,
             "birthPlace": birthPlace
         };
-        console.log(props.access);
-
+        
+        
         
         const requestOptions = {
             method: 'GET',
@@ -60,7 +61,7 @@ function FamilyMember(props) {
         };
         const requestOptions = {
             method: 'GET',
-            headers: {'Content-Type': 'application/json', 'data': JSON.stringify(formData), 'access': props.access}
+            headers: {'Content-Type': 'application/json', 'id': props._id, 'access': props.access}
         };
         console.log(formData)
        
@@ -68,6 +69,7 @@ function FamilyMember(props) {
         .then(response => response.json())
         .then(result => {
             setEditMode(false);
+            setDelete(true);
             console.log(result)
         })       
     }
@@ -134,9 +136,12 @@ function FamilyMember(props) {
             </div>
         )
     }
+    else if (deleteItem) {
+        return null;
+    }
     else {
         return (  
-            <div key={props._id} className="entry col-md-3">    
+            <div key={props._id} className="entry">    
                 <div className="avatar-holder">
                     <img src={Grandma} alt="Relative"></img>
                 </div>
@@ -144,9 +149,9 @@ function FamilyMember(props) {
                     <p>{firstName + " " + lastName}</p>
                 </div>  
                 <div className="info">
-                    <p>DOB: {(dob ? dob : "Unknown")}</p>
-                    <p>Bith Place: {birthPlace ? birthPlace : "Unknown"}</p>
-                    <p>Relationship: {(props.relationship ? props.relationship : "Unknown")}</p>
+                    <p>DOB: {dob}</p>
+                    <p>Birth Place: {birthPlace}</p>
+                    <p>Relationship: {props.relationship}</p>
                 </div>         
                 <div className="btn-row">                                     
                     <Button className="col btn btn-primary" onClick={e => setEditMode(true)}>Edit</Button>
@@ -240,6 +245,7 @@ class AddFamily extends React.Component{
             state: "", 
             country: "",
             relationship: "",
+            side: "Other",
             description: "",
             familyMembers: "",
             isLoading: true,
@@ -264,7 +270,7 @@ class AddFamily extends React.Component{
                 filledInData[key] = this.state[key];
             }
         });
-
+        console.log(filledInData);
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -274,7 +280,7 @@ class AddFamily extends React.Component{
         fetch('/api/HttpTrigger1', requestOptions)
             .then(response => response.json())
             .then(data => {
-                console.log(filledInData);
+                console.log(data);
                 this.setState(prevState => ({
                     familyMembers: [...prevState.familyMembers, filledInData]
                   }))
@@ -397,6 +403,22 @@ class AddFamily extends React.Component{
                             value={this.state.relationship || ""} 
                             onChange={this.handleChange}  
                             placeholder=""/>
+                        </Col>
+                    </FormGroup>
+                    <FormGroup row className="">
+                    <Label md={4}>Side of the Family:</Label>
+                        <Col md={6} >
+                        <select 
+                            name="side"
+                            value={this.state.side}
+                            onChange={this.handleChange}
+                            placeholder="">
+                            <option value="Other">Other</option>
+                            <option value="Mother">Mother's</option>
+                            <option value="Father">Father's</option>
+                            
+                            
+                        </select>
                         </Col>
                     </FormGroup>
                     <FormGroup row>

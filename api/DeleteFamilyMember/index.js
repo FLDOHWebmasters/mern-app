@@ -31,17 +31,8 @@ module.exports = async function (context, req) {
   }
 
   async function query() {
-      try {       
-          
-        var token = req.headers.access;
-        var data = JSON.parse(req.headers.data);        
+      try {            
         var id = req.headers.id;
-        var query = {};
-        Object.keys(data).map((key) => {
-            if (data[key]) {
-                query[key] = data[key];
-            }
-        })
         let docs = await client.db('tracker').collection('people').deleteOne({_id: new ObjectId(id) })
         .then(result => {
           return result;

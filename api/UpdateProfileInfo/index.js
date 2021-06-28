@@ -26,9 +26,9 @@ module.exports = async function (context, req) {
         throw err;
     } finally {
       // Ensures that the client will close when you finish/error
-      await client.close();
-      context.log("client closed.");
-      client = null;
+      //await client.close();
+      //context.log("client closed.");
+      //client = null;
     }
   }
 
@@ -39,14 +39,28 @@ module.exports = async function (context, req) {
         context.log(decodedToken.toString());
         decodedToken = decodedToken.upn;
         req.body['access'] = decodedToken.toString();
-        context.log(req.body)
-        let docs = await client.db('tracker').collection('people').insertOne(req.body)
-        .catch(err => console.error(`Failed to find documents: ${err}`));
-        
-        return (context.res = {
-            status: 200,
-            body: docs,
-          });
+        context.log(decodedToken.toString())
+        let findExistingUser = await client.db('tracker').collection('users').find({'access': req.body['access']})
+        .toArray()
+        .catch(err => console.error(`Insert failed: ${err}`));
+        context.log(findExistingUser)
+        if (findExistingUser.length === 0) {
+            let docs = await client.db('tracker').collection('users').insertOne(req.body)
+            .catch(err => console.error(`Insert failed: ${err}`));
+            return (context.res = {
+                status: 200,
+                body: docs,
+              });
+        }
+        else {
+            let docs = await client.db('tracker').collection('users').updateOne({'email': req.body['access']}, {$set: req.body})
+            .catch(err => console.error(`Insert failed: ${err}`));
+            return (context.res = {
+                status: 200,
+                body: docs,
+              });
+        }
+
       } catch (err) {
          context.log.error('ERROR', err);
         // This rethrown exception will be handled by the Functions Runtime and will only fail the individual invocation

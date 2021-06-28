@@ -26,26 +26,34 @@ module.exports = async function (context, req) {
         throw err;
     } finally {
       // Ensures that the client will close when you finish/error
-      await client.close();
-      context.log("client closed.");
-      client = null;
+      
     }
   }
 
   async function query() {
       try {
-        var token = req.body.access;
+        var token = req.headers.access;
         var decodedToken = jwt.decode(token);
         context.log(decodedToken.toString());
         decodedToken = decodedToken.upn;
-        req.body['access'] = decodedToken.toString();
-        context.log(req.body)
-        let docs = await client.db('tracker').collection('people').insertOne(req.body)
+        req.headers['access'] = decodedToken.toString();
+        context.log(req.headers.access)
+
+        let regex = "^" + req.headers['access'] + "$";
+
+        var query = {'access': {$regex: new RegExp(regex), $options: 'i'}};
+        var projection = {'firstName': 1, 'lastName': 1, 'dob': 1, "_id" : 0};
+        let findExistingUser = await client.db('tracker').collection('users').findOne(query, projection);
+        /**
+         * 
+         let docs = await client.db('tracker').collection('users').insertOne(req.body)
         .catch(err => console.error(`Failed to find documents: ${err}`));
+         */
         
+        context.log(findExistingUser);
         return (context.res = {
             status: 200,
-            body: docs,
+            body: findExistingUser,
           });
       } catch (err) {
          context.log.error('ERROR', err);

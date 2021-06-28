@@ -39,17 +39,22 @@ module.exports = async function (context, req) {
         decodedToken = decodedToken.upn
         console.log("decoded token: " + decodedToken);
         var id = context.bindingData.id;
+        console.log("id " + id)
         var searchQuery = {
-          "_id": new ObjectId(id),
-          "access": decodedToken
+          "_id": id,
+          //"access": decodedToken
         }
-        let docs = await client.db('tracker').collection('posts').findOne(searchQuery)
+        let docs = await client.db('tracker').collection('posts').findOne({_id: mongodb.ObjectID(id)})
         .then(result => {
           return result;
+          
         })
         .catch(err => console.error(`Failed to find documents: ${err}`));
-        console.log("docs: " + JSON.parse(JSON.stringify(docs)));
-        
+        console.log("docs: " + docs);
+        //JSON.parse(JSON.stringify(docs))
+        for(let key in docs) {
+          console.log(key + ":", docs[key]);
+        }
         return (context.res = {
             status: 200,
             body: JSON.parse(JSON.stringify(docs)),

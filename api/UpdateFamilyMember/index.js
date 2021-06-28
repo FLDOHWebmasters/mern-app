@@ -34,7 +34,9 @@ module.exports = async function (context, req) {
       try {       
           
         var token = req.headers.access;
-        var data = JSON.parse(req.headers.data);        
+        var data = JSON.parse(req.headers.data);  
+        context.log("before parsing " + req.headers.data);  
+        context.log("data " + data);    
         var id = req.headers.id;
         var query = {};
         Object.keys(data).map((key) => {

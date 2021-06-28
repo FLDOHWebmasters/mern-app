@@ -11,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import "./index.css";
 import Search from './Search';
 import Family from './Family';
+import Profile from './Profile';
 
   class App extends Component {
 
@@ -42,6 +43,13 @@ import Family from './Family';
                     user={this.props.user}
                     authButtonMethod={this.props.login} />
                 } />
+                <Route 
+                  path="/profile" 
+                  className="nav-link" 
+                  render={(props) => 
+                    <Profile 
+                      getAccessToken={this.props.getAccessToken} 
+                      isAuthenticated={this.props.isAuthenticated} {...props}/>}/>
                 <Route path="/family" className="nav-link" exact render={(props) => <Family getAccessToken={this.props.getAccessToken} {...props} />}/>
                 <Route 
                   path="/addfamily" 

@@ -10,6 +10,7 @@ import {
     useParams
   } from "react-router-dom";
 import './App.css';
+import { useHistory } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 
 
@@ -34,6 +35,7 @@ function NotYourPosts(props) {
 
 function PostPage (props) {
     const { postId } = useParams();
+    const history = useHistory();
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState("");
     const [title, setTitle] = useState("")
@@ -45,13 +47,12 @@ function PostPage (props) {
             headers: {'Content-Type': 'application/json', "access": props.access},
         };
         const fetchData = () => {
-        fetch(`/api/HttpTrigger5/${postId}`, requestOptions, {})
+        fetch(`/api/HttpTrigger5/${postId}`, requestOptions)
         .then((res) => {
-            console.log(JSON.stringify(res));
             return res.json();
         })
         .then((response) => {  
-            console.log(response);        
+            console.log("response" + JSON.stringify(response));        
             setData(response);
             setTitle(response.title);
             setDescription(response.description);
@@ -80,7 +81,7 @@ function PostPage (props) {
 
         await fetch('/api/UpdatePost', requestOptions)
         .then(response => response.json());
-
+        history.push("/posts");
         
     }
   
@@ -163,6 +164,23 @@ class Posts extends React.Component{
             access: accessToken
         })
         this.fetchPosts();    
+    }
+
+    async componentDidUpdate() {
+        const requestOptions = {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json', "access": this.state.access},
+        };
+        let newData = await fetch(
+            '/api/FindYourPosts',
+            requestOptions
+        )
+        .then(response => response.json())
+        
+        if (JSON.stringify(this.state.yourPosts) !== JSON.stringify(newData)) {
+            this.fetchPosts();   
+        }
+         
     }
 
     async handleDelete(e, _id) {

@@ -55,8 +55,7 @@ function AuthNavItem(props) {
         <NavItem>
             <Button
                 onClick={props.authButtonMethod}
-                className="btn-link nav-link border-0"
-                color="link">Sign In</Button>
+                className="border-0">Sign In</Button>
         </NavItem>
     );
 }
