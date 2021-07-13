@@ -42,8 +42,8 @@ module.exports = async function (context, req) {
         let regex = "^" + req.headers['access'] + "$";
 
         var query = {'access': {$regex: new RegExp(regex), $options: 'i'}};
-        var projection = {'firstName': 1, 'lastName': 1, 'dob': 1, "_id" : 0};
-        let findExistingUser = await client.db('tracker').collection('users').findOne(query, projection);
+        var project = {projection: {"_id" : 0, "access": 0}};
+        let findExistingUser = await client.db('tracker').collection('users').findOne(query, project);
         /**
          * 
          let docs = await client.db('tracker').collection('users').insertOne(req.body)

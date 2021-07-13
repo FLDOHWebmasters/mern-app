@@ -34,27 +34,35 @@ module.exports = async function (context, req) {
       try {
         var token = req.headers.access;
         var decodedToken = jwt.decode(token);
-        context.log(decodedToken.toString());
+        
         decodedToken = decodedToken.upn;
         req.headers['access'] = decodedToken.toString();
-        context.log(req.headers.access)
+        
+        let role = req.headers.role;
 
         let regex = "^" + req.headers['access'] + "$";
 
         var query = {'access': {$regex: new RegExp(regex), $options: 'i'}};
         var projection = {'firstName': 1, 'lastName': 1, 'dob': 1, "_id" : 0};
         let findExistingUser = await client.db('tracker').collection('users').findOne(query, projection);
-        /**
-         * 
-         let docs = await client.db('tracker').collection('users').insertOne(req.body)
-        .catch(err => console.error(`Failed to find documents: ${err}`));6E8uMBf3iD89qBx
-         */
+        let familyJSON = JSON.parse(JSON.stringify(findExistingUser));
+        let familyMember = familyJSON["family"]
+        console.log(role)
+
         
-        context.log(findExistingUser);
-        return (context.res = {
+        context.log(familyMember[role]);
+        context.log(familyMember[role] === undefined);
+        context.res = (
+            familyMember[role] !== undefined ? 
+            {
             status: 200,
-            body: findExistingUser,
-          });
+            body: familyMember[role],
+          } :
+          {
+            status: 200,
+            body: {},
+          } )
+        return context.res;
       } catch (err) {
          context.log.error('ERROR', err);
         // This rethrown exception will be handled by the Functions Runtime and will only fail the individual invocation

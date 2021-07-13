@@ -26,34 +26,29 @@ module.exports = async function (context, req) {
         throw err;
     } finally {
       // Ensures that the client will close when you finish/error
-      //await client.close();
-      //context.log("client closed.");
-      //client = null;
+      
     }
   }
 
   async function query() {
       try {
-        var token = req.body.access;
+        var token = req.headers.access;
         var decodedToken = jwt.decode(token);
-        
+        context.log(decodedToken.toString());
         decodedToken = decodedToken.upn;
-        req.body['access'] = decodedToken.toString();
-        
-        let regex = "^" + req.body['access'] + '$';
-        var filter = {'access': {$regex: new RegExp(regex), $options: 'i'}};
+        req.headers['access'] = decodedToken.toString();
+        context.log(req.headers.access)
 
-        let docs = await client.db('tracker').collection('users').updateOne(filter, 
-        {$set: req.body},
-        {upsert: true})
-        .then(response => console.log(response))
-        .catch(err => console.error(`Insert failed: ${err}`));
+        let regex = "^" + req.headers['access'] + "$";
+
+        var query = {'access': {$regex: new RegExp(regex), $options: 'i'}};
+        var project = {projection: {"_id" : 0, "access": 0}};
+        let findExistingUser = await client.db('tracker').collection('users').findOne(query, project);
+        
         return (context.res = {
             status: 200,
-            body: docs,
+            body: findExistingUser,
           });
-        
-
       } catch (err) {
          context.log.error('ERROR', err);
         // This rethrown exception will be handled by the Functions Runtime and will only fail the individual invocation

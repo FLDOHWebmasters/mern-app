@@ -40,6 +40,7 @@ import Profile from './Profile';
                 render={(props) =>
                   <Welcome {...props}
                     isAuthenticated={this.props.isAuthenticated}
+                    getAccessToken={this.props.getAccessToken}
                     user={this.props.user}
                     authButtonMethod={this.props.login} />
                 } />
@@ -49,8 +50,15 @@ import Profile from './Profile';
                   render={(props) => 
                     <Profile 
                       getAccessToken={this.props.getAccessToken} 
-                      isAuthenticated={this.props.isAuthenticated} {...props}/>}/>
-                <Route path="/family" className="nav-link" exact render={(props) => <Family getAccessToken={this.props.getAccessToken} {...props} />}/>
+                      isAuthenticated={this.props.isAuthenticated} 
+                      user={this.props.user}
+                      {...props}/>}/>
+                <Route 
+                  path="/family" 
+                  className="nav-link" 
+                  exact render={(props) => <Family 
+                                              getAccessToken={this.props.getAccessToken} 
+                                              {...props} />}/>
                 <Route 
                   path="/addfamily" 
                   className="nav-link" 

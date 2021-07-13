@@ -26,33 +26,36 @@ module.exports = async function (context, req) {
         throw err;
     } finally {
       // Ensures that the client will close when you finish/error
-      //await client.close();
-      //context.log("client closed.");
-      //client = null;
+      
     }
   }
 
   async function query() {
       try {
-        var token = req.body.access;
-        var decodedToken = jwt.decode(token);
-        
+        var token = req.headers.access;
+        var decodedToken = jwt.decode(token);       
         decodedToken = decodedToken.upn;
-        req.body['access'] = decodedToken.toString();
-        
-        let regex = "^" + req.body['access'] + '$';
+        req.headers['access'] = decodedToken.toString();     
+        let regex = "^" + req.headers['access'] + '$';
         var filter = {'access': {$regex: new RegExp(regex), $options: 'i'}};
-
+        var field = "family." + req.headers.role + ".";
+        
+        console.log(typeof(req.body))
+        console.log(Object.keys(req.body))
+        var info = {};
+        Object.entries(req.body).forEach(([key, value]) => {
+          info[field + key] = value;
+        })
+        console.log(info)
         let docs = await client.db('tracker').collection('users').updateOne(filter, 
-        {$set: req.body},
+        {$set: info},
         {upsert: true})
-        .then(response => console.log(response))
         .catch(err => console.error(`Insert failed: ${err}`));
+        
         return (context.res = {
             status: 200,
             body: docs,
           });
-        
 
       } catch (err) {
          context.log.error('ERROR', err);

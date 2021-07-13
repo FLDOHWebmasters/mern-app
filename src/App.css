@@ -278,15 +278,14 @@ option {
   position: relative;
   margin: 1rem;
   border: solid 2px white;
-  color: white;
+  color: rgb(22, 22, 22);
   opacity: 0.9;
   width: 15rem;
   height: fit-content;
   min-height: 15rem;
   border-radius: 10px;
   box-shadow: 0 10px 25px 5px rgba(0, 0, 0, 0.2);
-  background: rgb(156,159,161);
-  background: linear-gradient(117deg, rgba(156,159,161,1) 0%, rgba(255,255,255,0.6222864145658263) 76%, rgba(165,187,191,1) 100%);
+  background: rgb(240, 229, 213);
   overflow: auto;
   transition: ease-in-out 1s;
   font-family: 'Roboto', sans-serif;

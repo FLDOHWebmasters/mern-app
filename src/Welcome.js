@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
+import { config } from './Config';
 
 function WelcomeContent(props) {
     if (props.isAuthenticated) {
@@ -22,6 +23,42 @@ function WelcomeContent(props) {
 }
 
 export default class Welcome extends React.Component {
+    //component will mount, use props to fetch and see if user exists
+    //if user does not exist, add user and empty family array
+    //if user does exist, do nothing
+    constructor(props) {
+        super(props);
+        this.state = { access: ""};
+    }
+
+    async componentDidMount() {
+        try {
+            // Get the user's access token
+            var accessToken = await this.props.getAccessToken(config.scopes);
+            this.setState({
+                access: accessToken
+            })
+            const requestOptions = {
+                method: 'GET',
+                headers: {'Content-Type': 'application/json', 'access': this.state.access},
+            }
+            fetch('/api/FindUser', requestOptions, {})
+            .then((res) => {
+                return res.json();
+            })
+            .then((data) => {
+                console.log("logged in");            
+            })
+            .catch((error) => console.log(error));
+                            
+            }
+            catch (err) {
+            console.log(err)            
+            }
+            
+        
+    }
+
     render() {
         return (
             <div className="container-fluid px-0">

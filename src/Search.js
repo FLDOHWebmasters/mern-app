@@ -9,14 +9,39 @@ export default function Search(props) {
     const [dob, setDob] = useState("");
     const [birthPlace, setBirthPlace] = useState("");
     const [data, setData] = useState({});
+    
     useEffect(() => {
-        
-    })
+        if (props.data !== undefined) {
+            console.log(props.data)
+            var filteredData = {
+                "hardSearch": true,
+                "firstName": props.data.firstName,
+                "lastName": props.data.lastName,
+            }
+            var access = props.getAccessToken(config.scopes);
+            const requestOptions = {
+                method: 'GET',
+                headers: {'Content-Type': 'application/json', 'data': JSON.stringify(filteredData), 'access': access}
+            };
+            console.log(requestOptions)
+           
+            fetch(`/api/HttpTrigger7`, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                setData(result);
+                setIsLoading(false)
+                console.log(result)
+            })
+        }
+           
+    }, [])
 
     const handleSubmit = e => {
         e.preventDefault();
         var access = props.getAccessToken(config.scopes);
+        console.log(firstName.length > 0 && lastName.length > 0)
         const formData = {
+            "hardSearch": (firstName.length > 0 && lastName.length > 0),
             "firstName":firstName,
             "lastName": lastName,
             "dob": dob,
@@ -83,30 +108,31 @@ export default function Search(props) {
                     </FormGroup>
                       
                     </Form> 
-                </div><div className="row justify-content-center align-content-center">
-            <div className="col-auto letsgoBtn">
-                <Button 
-                className="letsgo" 
-                type="submit" 
-                value="Submit" 
-                onClick={e => handleSubmit(e)}>Let's go</Button>  
-            </div></div> 
-            </div></div>   
-            {isLoading && <p>Loading.</p>}  
+                </div>
+                <div className="row justify-content-center align-content-center">
+                    <div className="col-auto letsgoBtn">
+                        <Button 
+                        className="letsgo" 
+                        type="submit" 
+                        value="Submit" 
+                        onClick={e => handleSubmit(e)}>Search</Button>  
+                    </div>
                     
+            </div> 
+            </div></div>                      
         </div>
         <div className="row justify-content-center">
             <div className="col-auto">     
-                {!isLoading && (data.map(props => {
+                {!isLoading && (data.map(person => {
                     return (   
-                        <div key={props._id} className="entry">    
+                        <div key={person._id} className="entry">    
                             <div className="name">
-                                <p>{props.firstName + " " + props.lastName}</p>
+                                <p>{person.firstName + " " + person.lastName}</p>
                             </div>  
                             <div className="info">
-                                <p>DOB: {(props.dob ? props.dob : "Unknown")}</p>
-                                <p>Bith Place: {props.birthPlace ? props.birthPlace : "Unknown"}</p>
-                                <p>Relationship: {(props.relationship ? props.relationship : "Unknown")}</p>
+                                <p>DOB: {(person.dob ? person.dob : "Unknown")}</p>
+                                <p>Birth Place: {person.birthPlace ? person.birthPlace : "Unknown"}</p>
+
                             </div>                                   
                         </div>                         
                         )

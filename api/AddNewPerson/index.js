@@ -26,33 +26,42 @@ module.exports = async function (context, req) {
         throw err;
     } finally {
       // Ensures that the client will close when you finish/error
-      //await client.close();
-      //context.log("client closed.");
-      //client = null;
+      
     }
   }
 
   async function query() {
       try {
-        var token = req.body.access;
-        var decodedToken = jwt.decode(token);
-        
+        // decoding access token
+        var token = req.headers.access;        
+        var decodedToken = jwt.decode(token);        
         decodedToken = decodedToken.upn;
-        req.body['access'] = decodedToken.toString();
-        
-        let regex = "^" + req.body['access'] + '$';
-        var filter = {'access': {$regex: new RegExp(regex), $options: 'i'}};
+        req.headers['access'] = decodedToken.toString();
+        let regex = "^" + req.headers['access'] + '$';
 
-        let docs = await client.db('tracker').collection('users').updateOne(filter, 
-        {$set: req.body},
+
+        var filter = {'access': {$regex: new RegExp(regex), $options: 'i'}};
+        var newFamilyMember = "family." + req.headers.person + '-' + req.headers.relation_code;
+        console.log(req.headers.person)
+        console.log(req.headers.relation)
+
+        let docs = await client.db('tracker').collection('users').updateOne(filter,
+          {
+            $set: {
+              [newFamilyMember]: req.body,
+            },
+            $push: {
+                ["family." + req.headers.person + "." + req.headers.relation]: req.headers.person + '-' + req.headers.relation_code
+            }
+          },
         {upsert: true})
         .then(response => console.log(response))
         .catch(err => console.error(`Insert failed: ${err}`));
+        
         return (context.res = {
             status: 200,
             body: docs,
           });
-        
 
       } catch (err) {
          context.log.error('ERROR', err);

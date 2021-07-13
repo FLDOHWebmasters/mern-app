@@ -37,19 +37,65 @@ module.exports = async function (context, req) {
             */
         var data = JSON.parse(req.headers.data);
         console.log(req.headers.data)
-        var query = {};
+        var query = [];
+         
         Object.keys(data).map((key) => {
-            if (data[key]) {
-                query[key] = {$regex: `${data[key]}`}
+            if (data[key].length > 0) {
+                console.log(key)
+                query.push(key);
+                //{$regex: `${data[key]}`}
             }
         })
+        var projection = {projection: {"_id" : 0, "about": 0}};
+        var test = await client.db('tracker').collection('users').find({}, projection)
+        //.toArray()
+        //.catch(err => console.error(`Failed to find documents: ${err}`));
+        
+        
+        let document;
+        let result = [];
+        console.log(data["hardSearch"]);
+        if (data["hardSearch"]) {
+            while ((document = await test.next())) {
+                Object.keys(document.family).forEach((key) => {
+                    let familyMember = document.family[key];
+                    if (familyMember.firstName === data["firstName"]
+                        && familyMember.lastName === data["lastName"]) {
+                            result.push(document.family[key])
+                            
+                    }
+                })
+                //console.log(document.family)
+            }
+        }
+        else {
+            while ((document = await test.next())) {
+                Object.keys(document.family).forEach((key) => {
+                    let familyMember = document.family[key];
+                    console.log(document.family[key])
+                    if (familyMember.firstName === data["firstName"]
+                        || familyMember.lastName === data["lastName"]) {
+                            result.push(document.family[key])
+                            
+                    }
+                })
+                //console.log(document.family)
+            }
+        }
+        
+
+        console.log(result)
+        //console.log("test " + JSON.parse(test))
+        /**
+         * 
+         
         let docs = await client.db('tracker').collection('people').find(query)
         .toArray()
         .catch(err => console.error(`Failed to find documents: ${err}`));
-        console.log(docs);
+        console.log(docs);*/
         return (context.res = {
             status: 200,
-            body: JSON.parse(JSON.stringify(docs)),
+            body: result,
         });
       } catch (err) {
          context.log.error('ERROR', err);
